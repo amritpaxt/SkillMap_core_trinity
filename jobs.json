@@ -1,0 +1,41 @@
+{
+  "data_scientist": {
+    "skills": ["python", "machine learning", "pandas", "numpy", "statistics", "data visualization"]
+  },
+
+  "machine_learning_engineer": {
+    "skills": ["python", "machine learning", "tensorflow", "pytorch", "data preprocessing", "model evaluation"]
+  },
+
+  "backend_developer": {
+    "skills": ["python", "django", "flask", "sql", "rest api", "git"]
+  },
+
+  "frontend_developer": {
+    "skills": ["html", "css", "javascript", "react", "responsive design", "git"]
+  },
+
+  "full_stack_developer": {
+    "skills": ["html", "css", "javascript", "react", "node.js", "sql", "git"]
+  },
+
+  "devops_engineer": {
+    "skills": ["docker", "kubernetes", "aws", "linux", "ci/cd", "git"]
+  },
+
+  "software_engineer": {
+    "skills": ["java", "python", "data structures", "algorithms", "git", "problem solving"]
+  },
+
+  "cybersecurity_analyst": {
+    "skills": ["network security", "linux", "penetration testing", "cryptography", "security tools"]
+  },
+
+  "data_analyst": {
+    "skills": ["sql", "python", "pandas", "data visualization", "excel", "statistics"]
+  },
+
+  "ai_engineer": {
+    "skills": ["python", "machine learning", "deep learning", "tensorflow", "nlp", "data preprocessing"]
+  }
+}
