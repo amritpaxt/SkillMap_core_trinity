@@ -1,0 +1,15 @@
+#Backend Example
+Name: Arjun Verma
+
+Skills:
+Python
+Django
+REST API
+SQL
+Git
+
+Projects:
+Built a REST API for a task management system using Django.
+
+Education:
+B.Tech in Computer Science

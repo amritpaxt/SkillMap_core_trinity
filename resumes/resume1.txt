@@ -1,0 +1,15 @@
+#Data Scientist Example
+Name: Rahul Sharma
+
+Skills:
+Python
+Machine Learning
+Pandas
+Numpy
+Data Visualization
+
+Projects:
+Built a predictive model using Scikit-learn to forecast sales data.
+
+Education:
+B.Tech in Computer Science

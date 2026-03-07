@@ -1,0 +1,15 @@
+#Frontend Example
+Name: Ananya Singh
+
+Skills:
+HTML
+CSS
+JavaScript
+React
+Responsive Design
+
+Projects:
+Developed a responsive e-commerce website using React.
+
+Education:
+B.Tech in Computer Science
