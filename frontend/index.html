@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SkillMap — Career Navigation Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --black: #080c10;
+    --navy: #0d1520;
+    --panel: #111c2b;
+    --border: #1e2f44;
+    --amber: #f5a623;
+    --amber-dim: #c47f10;
+    --teal: #22d3b0;
+    --text: #e8ecf0;
+    --muted: #6b8099;
+    --grid: rgba(255,255,255,0.03);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* Grid texture overlay */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 48px;
+    height: 64px;
+    background: rgba(8,12,16,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 1.5rem;
+    letter-spacing: 0.04em;
+    color: var(--text);
+  }
+  .nav-logo span { color: var(--amber); }
+
+  .nav-links { display: flex; gap: 32px; }
+  .nav-links a {
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+
+  .nav-cta {
+    background: var(--amber);
+    color: var(--black);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 9px 22px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .nav-cta:hover { background: #ffc043; transform: translateY(-1px); }
+
+  /* ─── HERO ─── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 100px 48px 80px;
+    overflow: hidden;
+    z-index: 1;
+  }
+
+  .hero-glow {
+    position: absolute;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(245,166,35,0.12) 0%, transparent 70%);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -60%);
+    pointer-events: none;
+  }
+
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(245,166,35,0.1);
+    border: 1px solid rgba(245,166,35,0.3);
+    padding: 6px 14px;
+    font-size: 0.7rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 28px;
+    animation: fadeUp 0.6s ease both;
+  }
+  .hero-tag::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--amber);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
+  }
+
+  .hero h1 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: clamp(4rem, 10vw, 9rem);
+    line-height: 0.9;
+    text-align: center;
+    letter-spacing: -0.01em;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  .hero h1 .accent { color: var(--amber); }
+  .hero h1 .outline {
+    -webkit-text-stroke: 2px var(--text);
+    color: transparent;
+  }
+
+  .hero-sub {
+    margin-top: 28px;
+    max-width: 520px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 1rem;
+    line-height: 1.7;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  .hero-actions {
+    display: flex; gap: 16px; margin-top: 44px;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+
+  .btn-primary {
+    background: var(--amber);
+    color: var(--black);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 14px 36px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-primary::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: rgba(255,255,255,0.15);
+    transform: translateX(-100%);
+    transition: transform 0.3s;
+  }
+  .btn-primary:hover::after { transform: translateX(0); }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(245,166,35,0.35); }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 14px 36px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-ghost:hover { border-color: var(--amber); color: var(--amber); }
+
+  .hero-stats {
+    display: flex; gap: 48px; margin-top: 72px;
+    animation: fadeUp 0.6s 0.4s ease both;
+  }
+  .stat-item { text-align: center; }
+  .stat-num {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 2.4rem;
+    color: var(--amber);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  .hero-divider {
+    width: 1px;
+    background: var(--border);
+    height: 40px;
+    align-self: center;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── SECTION WRAPPER ─── */
+  section { position: relative; z-index: 1; }
+
+  .section-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: clamp(2.2rem, 5vw, 3.8rem);
+    line-height: 1;
+    letter-spacing: -0.01em;
+  }
+
+  /* ─── UPLOAD / DEMO SECTION ─── */
+  .upload-section {
+    padding: 100px 48px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .upload-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    margin-top: 60px;
+    align-items: start;
+  }
+
+  .upload-panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .upload-panel::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--amber), transparent);
+  }
+
+  .drop-zone {
+    border: 1.5px dashed var(--border);
+    padding: 48px 32px;
+    text-align: center;
+    transition: all 0.3s;
+    cursor: pointer;
+    margin-bottom: 24px;
+    position: relative;
+  }
+  .drop-zone:hover, .drop-zone.active {
+    border-color: var(--amber);
+    background: rgba(245,166,35,0.04);
+  }
+
+  .drop-icon {
+    width: 48px; height: 48px;
+    margin: 0 auto 16px;
+    border: 1.5px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    transition: border-color 0.3s;
+  }
+  .drop-zone:hover .drop-icon { border-color: var(--amber); }
+
+  .drop-zone h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 0.06em;
+    margin-bottom: 6px;
+  }
+  .drop-zone p { font-size: 0.8rem; color: var(--muted); }
+
+  .role-select-group { margin-bottom: 24px; }
+  .role-select-group label {
+    display: block;
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .role-pills {
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .pill {
+    padding: 7px 16px;
+    border: 1px solid var(--border);
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: transparent;
+    color: var(--muted);
+  }
+  .pill:hover { border-color: var(--amber); color: var(--amber); }
+  .pill.selected { border-color: var(--amber); background: rgba(245,166,35,0.12); color: var(--amber); }
+
+  .company-input {
+    width: 100%;
+    background: var(--black);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 12px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+    margin-bottom: 24px;
+  }
+  .company-input:focus { border-color: var(--amber); }
+  .company-input::placeholder { color: var(--muted); }
+
+  .analyze-btn {
+    width: 100%;
+    background: var(--amber);
+    color: var(--black);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 16px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .analyze-btn:hover { background: #ffc043; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(245,166,35,0.3); }
+  .analyze-btn:disabled { background: var(--border); color: var(--muted); cursor: not-allowed; transform: none; box-shadow: none; }
+
+  /* Results panel */
+  .results-panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+    min-height: 480px;
+    display: flex; flex-direction: column;
+  }
+  .results-panel::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--teal), transparent);
+  }
+
+  .results-placeholder {
+    flex: 1;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    gap: 12px;
+  }
+  .results-placeholder .big-num {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 5rem;
+    color: var(--border);
+    line-height: 1;
+  }
+  .results-placeholder p { color: var(--muted); font-size: 0.85rem; }
+
+  /* Score ring */
+  .score-ring-wrap {
+    display: flex; align-items: center; gap: 24px;
+    margin-bottom: 28px;
+  }
+  .score-ring {
+    position: relative;
+    width: 90px; height: 90px;
+    flex-shrink: 0;
+  }
+  .score-ring svg { transform: rotate(-90deg); }
+  .score-ring .score-val {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 1.6rem;
+    color: var(--amber);
+  }
+  .score-meta h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1.4rem;
+    margin-bottom: 4px;
+  }
+  .score-meta p { font-size: 0.8rem; color: var(--muted); }
+
+  .skill-section-title {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+    margin-top: 20px;
+  }
+
+  .skill-bars { display: flex; flex-direction: column; gap: 10px; }
+  .skill-bar-item { }
+  .skill-bar-header {
+    display: flex; justify-content: space-between;
+    font-size: 0.8rem;
+    margin-bottom: 5px;
+  }
+  .skill-bar-header span:last-child { color: var(--muted); font-size: 0.72rem; }
+  .bar-track {
+    height: 4px;
+    background: var(--border);
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    background: var(--amber);
+    transition: width 1s ease;
+  }
+  .bar-fill.gap { background: #e05252; }
+  .bar-fill.teal { background: var(--teal); }
+
+  .gap-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+  .gap-tag {
+    font-size: 0.7rem;
+    padding: 4px 10px;
+    border: 1px solid #e05252;
+    color: #e05252;
+    letter-spacing: 0.06em;
+  }
+  .rec-tag {
+    font-size: 0.7rem;
+    padding: 4px 10px;
+    border: 1px solid var(--teal);
+    color: var(--teal);
+    letter-spacing: 0.06em;
+  }
+
+  /* ─── HOW IT WORKS ─── */
+  .how-section {
+    padding: 100px 48px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .steps-track {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0;
+    margin-top: 60px;
+    position: relative;
+  }
+  .steps-track::before {
+    content: '';
+    position: absolute;
+    top: 32px; left: 32px; right: 32px;
+    height: 1px;
+    background: linear-gradient(90deg, var(--amber), var(--teal));
+  }
+
+  .step-item {
+    padding: 0 16px;
+    position: relative;
+  }
+
+  .step-num {
+    width: 64px; height: 64px;
+    border: 1px solid var(--border);
+    background: var(--navy);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 1.4rem;
+    color: var(--amber);
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+    transition: all 0.3s;
+  }
+  .step-item:hover .step-num {
+    background: var(--amber);
+    color: var(--black);
+    border-color: var(--amber);
+    transform: scale(1.05);
+  }
+
+  .step-item h4 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.04em;
+    margin-bottom: 6px;
+  }
+  .step-item p { font-size: 0.75rem; color: var(--muted); line-height: 1.5; }
+
+  /* ─── FEATURES ─── */
+  .features-section {
+    padding: 100px 48px;
+    background: var(--navy);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .features-inner { max-width: 1200px; margin: 0 auto; }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    margin-top: 60px;
+  }
+
+  .feature-card {
+    background: var(--navy);
+    padding: 40px 36px;
+    transition: background 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .feature-card:hover { background: var(--panel); }
+
+  .feature-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--amber);
+    transform: scaleX(0);
+    transition: transform 0.3s;
+    transform-origin: left;
+  }
+  .feature-card:hover::after { transform: scaleX(1); }
+
+  .feature-icon {
+    font-size: 1.6rem;
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  .feature-card h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1.35rem;
+    letter-spacing: 0.04em;
+    margin-bottom: 10px;
+  }
+  .feature-card p { font-size: 0.83rem; color: var(--muted); line-height: 1.65; }
+
+  /* ─── ROADMAP / FUTURE ─── */
+  .roadmap-section {
+    padding: 100px 48px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .roadmap-cards {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+    margin-top: 60px;
+  }
+
+  .roadmap-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 28px 24px;
+    transition: all 0.3s;
+  }
+  .roadmap-card:hover {
+    border-color: var(--amber);
+    transform: translateY(-4px);
+  }
+  .roadmap-icon { font-size: 1.5rem; margin-bottom: 14px; display: block; }
+  .roadmap-card h4 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: 0.04em;
+    margin-bottom: 6px;
+  }
+  .roadmap-card p { font-size: 0.75rem; color: var(--muted); line-height: 1.5; }
+
+  /* ─── TEAM ─── */
+  .team-section {
+    padding: 80px 48px;
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .hackathon-badge {
+    display: inline-block;
+    border: 1px solid var(--amber);
+    padding: 8px 20px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 0.16em;
+    color: var(--amber);
+    margin-bottom: 40px;
+    text-transform: uppercase;
+  }
+
+  .team-names {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .team-names span { color: var(--text); }
+
+  /* ─── FOOTER ─── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 48px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: relative; z-index: 1;
+  }
+  .footer-logo {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 1.2rem;
+    letter-spacing: 0.04em;
+  }
+  .footer-logo span { color: var(--amber); }
+  footer p { font-size: 0.75rem; color: var(--muted); }
+
+  /* ─── LOADING STATE ─── */
+  .loading-bar {
+    height: 2px;
+    background: linear-gradient(90deg, var(--amber), var(--teal), var(--amber));
+    background-size: 200%;
+    animation: shimmer 1.5s linear infinite;
+    display: none;
+    margin-bottom: 16px;
+  }
+  .loading-bar.active { display: block; }
+  @keyframes shimmer {
+    from { background-position: 0%; }
+    to { background-position: 200%; }
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 900px) {
+    nav { padding: 0 24px; }
+    .nav-links { display: none; }
+    .hero { padding: 100px 24px 60px; }
+    .hero-stats { gap: 24px; }
+    .upload-section, .how-section, .roadmap-section, .team-section { padding: 60px 24px; }
+    .upload-grid { grid-template-columns: 1fr; }
+    .steps-track { grid-template-columns: repeat(2, 1fr); gap: 32px; }
+    .steps-track::before { display: none; }
+    .features-grid { grid-template-columns: 1fr; }
+    .roadmap-cards { grid-template-columns: repeat(2, 1fr); }
+    .features-section { padding: 60px 24px; }
+    footer { flex-direction: column; gap: 12px; text-align: center; }
+  }
+
+  /* ─── FILE UPLOAD HIDDEN INPUT ─── */
+  #file-input { display: none; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Skill<span>Map</span></div>
+  <div class="nav-links">
+    <a href="#analyze">Analyze</a>
+    <a href="#how">How It Works</a>
+    <a href="#features">Features</a>
+    <a href="#roadmap">Roadmap</a>
+  </div>
+  <button class="nav-cta" onclick="document.getElementById('analyze').scrollIntoView({behavior:'smooth'})">Try Now</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-tag">INNERVE'26 · CORE_TRINITY</div>
+  <h1>
+    NAVIGATE<br/>
+    YOUR <span class="accent">CAREER</span><br/>
+    <span class="outline">BLINDSPOT</span>
+  </h1>
+  <p class="hero-sub">
+    Upload your resume. Pick your target role. Get a precise skill-gap analysis and actionable roadmap — built for students, not assumptions.
+  </p>
+  <div class="hero-actions">
+    <button class="btn-primary" onclick="document.getElementById('analyze').scrollIntoView({behavior:'smooth'})">Analyze My Resume</button>
+    <button class="btn-ghost" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})">How It Works</button>
+  </div>
+  <div class="hero-stats">
+    <div class="stat-item">
+      <div class="stat-num">6</div>
+      <div class="stat-label">Step Process</div>
+    </div>
+    <div class="hero-divider"></div>
+    <div class="stat-item">
+      <div class="stat-num">12+</div>
+      <div class="stat-label">Target Roles</div>
+    </div>
+    <div class="hero-divider"></div>
+    <div class="stat-item">
+      <div class="stat-num">100%</div>
+      <div class="stat-label">Personalized</div>
+    </div>
+  </div>
+</section>
+
+<!-- ANALYZE SECTION -->
+<section class="upload-section" id="analyze">
+  <div class="section-label">▸ Start Here</div>
+  <h2 class="section-title">ANALYZE YOUR<br/><span style="color:var(--amber)">RESUME</span></h2>
+
+  <div class="upload-grid">
+
+    <!-- Left: Upload + Config -->
+    <div class="upload-panel">
+      <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
+        <div class="drop-icon">📄</div>
+        <h3>Drop Resume Here</h3>
+        <p>PDF format · Click or drag to upload</p>
+        <p id="file-name" style="margin-top:8px; color:var(--amber); font-size:0.8rem;"></p>
+      </div>
+      <input type="file" id="file-input" accept=".pdf,.doc,.docx" />
+
+      <div class="role-select-group">
+        <label>Target Role</label>
+        <div class="role-pills" id="role-pills">
+          <div class="pill selected" data-role="Frontend Developer">Frontend Dev</div>
+          <div class="pill" data-role="Backend Developer">Backend Dev</div>
+          <div class="pill" data-role="Data Analyst">Data Analyst</div>
+          <div class="pill" data-role="ML Engineer">ML Engineer</div>
+          <div class="pill" data-role="DevOps Engineer">DevOps</div>
+          <div class="pill" data-role="Product Manager">Product Manager</div>
+          <div class="pill" data-role="UI/UX Designer">UI/UX</div>
+          <div class="pill" data-role="Full Stack Developer">Full Stack</div>
+        </div>
+      </div>
+
+      <input class="company-input" id="company-input" type="text" placeholder="Target company (e.g. Google, Razorpay, Flipkart...)" />
+
+      <div class="loading-bar" id="loading-bar"></div>
+      <button class="analyze-btn" id="analyze-btn" onclick="runAnalysis()">
+        ⚡ Analyze Skill Gap
+      </button>
+    </div>
+
+    <!-- Right: Results -->
+    <div class="results-panel" id="results-panel">
+      <div style="font-size:0.68rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--muted); margin-bottom:20px;">
+        ▸ Analysis Results
+      </div>
+
+      <div class="results-placeholder" id="results-placeholder">
+        <div class="big-num">—</div>
+        <p>Your skill-gap analysis<br/>will appear here</p>
+      </div>
+
+      <div id="results-content" style="display:none;"></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section" id="how">
+  <div class="section-label">▸ Process</div>
+  <h2 class="section-title">HOW SKILLMAP<br/><span style="color:var(--amber)">WORKS</span></h2>
+
+  <div class="steps-track">
+    <div class="step-item">
+      <div class="step-num">01</div>
+      <h4>Upload Resume</h4>
+      <p>Upload your current resume in PDF format to the platform.</p>
+    </div>
+    <div class="step-item">
+      <div class="step-num">02</div>
+      <h4>Select Role</h4>
+      <p>Choose the internship type and specific role you're targeting.</p>
+    </div>
+    <div class="step-item">
+      <div class="step-num">03</div>
+      <h4>AI Analysis</h4>
+      <p>System analyzes your resume against real industry job requirements.</p>
+    </div>
+    <div class="step-item">
+      <div class="step-num">04</div>
+      <h4>View Gaps</h4>
+      <p>Skill gaps shown through interactive visual breakdowns.</p>
+    </div>
+    <div class="step-item">
+      <div class="step-num">05</div>
+      <h4>Get Roadmap</h4>
+      <p>Platform recommends skills, projects, and resources to build.</p>
+    </div>
+    <div class="step-item">
+      <div class="step-num">06</div>
+      <h4>Track Progress</h4>
+      <p>Update resume and track improvement with readiness scoring.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features-section" id="features">
+  <div class="features-inner">
+    <div class="section-label">▸ What Makes Us Different</div>
+    <h2 class="section-title">BUILT FOR<br/><span style="color:var(--amber)">CLARITY</span></h2>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <span class="feature-icon">🔍</span>
+        <h3>Resume Analyzer</h3>
+        <p>Deep parsing of your resume to extract every skill, project, and experience — then matched against current industry requirements.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🎯</span>
+        <h3>Role & Company Targeting</h3>
+        <p>Not generic feedback — precise gap analysis tailored to the exact company and role you're applying for.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🗺️</span>
+        <h3>Personalized Roadmap</h3>
+        <p>A step-by-step learning path with project recommendations mapped directly to the skills you need to develop.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🏗️</span>
+        <h3>Project-First Suggestions</h3>
+        <p>Get resume-ready project ideas, each engineered to demonstrate exactly the skills recruiters look for.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">📊</span>
+        <h3>Internship Readiness Score</h3>
+        <p>Watch your score update in real-time as your resume improves — track real measurable progress, not assumptions.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">⚡</span>
+        <h3>Skill Extraction from Projects</h3>
+        <p>AI identifies implicit skills demonstrated in your projects — skills you have but haven't explicitly listed on your resume.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<section class="roadmap-section" id="roadmap">
+  <div class="section-label">▸ Future Vision</div>
+  <h2 class="section-title">WHAT'S<br/><span style="color:var(--amber)">NEXT</span></h2>
+
+  <div class="roadmap-cards">
+    <div class="roadmap-card">
+      <span class="roadmap-icon">🏫</span>
+      <h4>College Dashboards</h4>
+      <p>Institution-level analytics for placement officers and career counselors.</p>
+    </div>
+    <div class="roadmap-card">
+      <span class="roadmap-icon">🧑‍🏫</span>
+      <h4>Mentor Integration</h4>
+      <p>Connect students with industry mentors for personalized feedback loops.</p>
+    </div>
+    <div class="roadmap-card">
+      <span class="roadmap-icon">👥</span>
+      <h4>Community Projects</h4>
+      <p>Enable collaborative project building among students with complementary skills.</p>
+    </div>
+    <div class="roadmap-card">
+      <span class="roadmap-icon">🌐</span>
+      <h4>Multi-Language</h4>
+      <p>Regional language interfaces for broader accessibility across India.</p>
+    </div>
+    <div class="roadmap-card">
+      <span class="roadmap-icon">📂</span>
+      <h4>Resume Versioning</h4>
+      <p>Manage multiple optimized resume versions for different roles and companies.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section class="team-section">
+  <div class="hackathon-badge">INNERVE'26 · HACKATHON</div>
+  <div class="section-label">▸ Team Core Trinity</div>
+  <div class="team-names">
+    <span>Amrita Yadav</span> · Agrima Sharma · Khushi Dhondiyal
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Skill<span>Map</span></div>
+  <p>Not a resume checker — a career navigation tool.</p>
+  <p style="color:var(--muted); font-size:0.72rem;">INNERVE'26 · CORE_TRINITY</p>
+</footer>
+
+<script>
+  // ─── PILL SELECTION ───
+  document.getElementById('role-pills').addEventListener('click', e => {
+    if (!e.target.classList.contains('pill')) return;
+    document.querySelectorAll('.pill').forEach(p => p.classList.remove('selected'));
+    e.target.classList.add('selected');
+  });
+
+  // ─── FILE UPLOAD ───
+  const fileInput = document.getElementById('file-input');
+  const dropZone = document.getElementById('drop-zone');
+
+  fileInput.addEventListener('change', e => {
+    if (e.target.files[0]) {
+      document.getElementById('file-name').textContent = '✓ ' + e.target.files[0].name;
+      dropZone.classList.add('active');
+    }
+  });
+
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('active'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('active'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      document.getElementById('file-name').textContent = '✓ ' + file.name;
+    }
+  });
+
+  // ─── ANALYSIS (DEMO) ───
+  function runAnalysis() {
+    const btn = document.getElementById('analyze-btn');
+    const loading = document.getElementById('loading-bar');
+    const role = document.querySelector('.pill.selected')?.dataset.role || 'Frontend Developer';
+    const company = document.getElementById('company-input').value || 'a target company';
+
+    btn.disabled = true;
+    btn.textContent = 'Analyzing...';
+    loading.classList.add('active');
+
+    setTimeout(() => {
+      loading.classList.remove('active');
+      btn.disabled = false;
+      btn.textContent = '⚡ Analyze Skill Gap';
+      showResults(role, company);
+    }, 2000);
+  }
+
+  function showResults(role, company) {
+    document.getElementById('results-placeholder').style.display = 'none';
+    const content = document.getElementById('results-content');
+    content.style.display = 'block';
+
+    const roleData = {
+      'Frontend Developer': {
+        score: 62,
+        have: ['HTML/CSS', 'JavaScript', 'Git'],
+        gaps: ['React.js', 'TypeScript', 'REST APIs', 'Testing'],
+        recs: ['Build a React ToDo app', 'Learn TypeScript basics', 'Build a weather API app']
+      },
+      'Data Analyst': {
+        score: 55,
+        have: ['Python', 'Excel', 'SQL basics'],
+        gaps: ['Pandas', 'Tableau', 'Statistics', 'Power BI'],
+        recs: ['EDA project on Kaggle dataset', 'Build a Tableau dashboard', 'Learn hypothesis testing']
+      },
+      'ML Engineer': {
+        score: 48,
+        have: ['Python', 'Math basics', 'Git'],
+        gaps: ['PyTorch/TensorFlow', 'Scikit-learn', 'Feature Engineering', 'MLOps'],
+        recs: ['Build a classification model', 'Complete fast.ai course', 'Deploy model with Flask']
+      },
+      'Backend Developer': {
+        score: 58,
+        have: ['Python', 'Databases', 'Git'],
+        gaps: ['Node.js/Express', 'Docker', 'Redis', 'API Design'],
+        recs: ['Build a REST API', 'Learn Docker basics', 'Build auth system with JWT']
+      }
+    };
+
+    const data = roleData[role] || roleData['Frontend Developer'];
+    const circumference = 2 * Math.PI * 38;
+    const dashOffset = circumference - (data.score / 100) * circumference;
+    const scoreColor = data.score >= 70 ? '#22d3b0' : data.score >= 50 ? '#f5a623' : '#e05252';
+
+    content.innerHTML = `
+      <div class="score-ring-wrap">
+        <div class="score-ring">
+          <svg width="90" height="90" viewBox="0 0 90 90">
+            <circle cx="45" cy="45" r="38" fill="none" stroke="#1e2f44" stroke-width="6"/>
+            <circle cx="45" cy="45" r="38" fill="none" stroke="${scoreColor}" stroke-width="6"
+              stroke-dasharray="${circumference}" stroke-dashoffset="${dashOffset}"
+              stroke-linecap="round" style="transition: stroke-dashoffset 1s ease;"/>
+          </svg>
+          <div class="score-val" style="color:${scoreColor}">${data.score}</div>
+        </div>
+        <div class="score-meta">
+          <h3>Internship Readiness</h3>
+          <p>Target: ${role} at ${company}</p>
+          <p style="color:${scoreColor}; font-size:0.75rem; margin-top:4px;">
+            ${data.score >= 70 ? '✓ Strong match' : data.score >= 50 ? '⚡ Needs improvement' : '⚠ Significant gaps found'}
+          </p>
+        </div>
+      </div>
+
+      <div class="skill-section-title">✓ Skills You Have</div>
+      <div class="gap-tags">
+        ${data.have.map(s => `<span class="rec-tag">${s}</span>`).join('')}
+      </div>
+
+      <div class="skill-section-title">✗ Critical Gaps for ${role}</div>
+      <div class="gap-tags">
+        ${data.gaps.map(s => `<span class="gap-tag">${s}</span>`).join('')}
+      </div>
+
+      <div class="skill-section-title">▸ Recommended Projects</div>
+      <div style="display:flex; flex-direction:column; gap:8px; margin-top:4px;">
+        ${data.recs.map((r, i) => `
+          <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; border:1px solid var(--border); font-size:0.8rem;">
+            <span style="color:var(--amber); font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:0.9rem;">${String(i+1).padStart(2,'0')}</span>
+            <span>${r}</span>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  // ─── SCROLL ANIMATIONS ───
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.step-item, .feature-card, .roadmap-card').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>
